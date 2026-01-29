@@ -16,3 +16,7 @@ Out of scope:
 Status:
 Work in progress
 
+Note:
+At this stage, the focus is on environment setup and log visibility.
+Analysis and investigation will be performed in the next phase,
+once the logging pipeline is fully validated.
