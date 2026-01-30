@@ -1,56 +1,54 @@
 # Scenario 3 – PowerShell Execution
 
 ## Objective
-Observe and analyze the execution of a PowerShell process from an interactive
-user context and how it is detected by the SIEM.
+Observe how a basic PowerShell command executed by a local user
+appears in the SIEM and what level of detail is available for analysis.
 
 ## Environment
 - Windows 11 endpoint (real system)
 - Wazuh SIEM
 - Sysmon enabled on the endpoint
 
-## Planned Activity
-Execute a simple PowerShell command from a non-administrative user context
-to generate a process creation event with command-line visibility.
+## Activity Performed
+From an interactive user session, I executed a simple PowerShell command
+without administrative privileges.
 
-## Expected Outcome
-- Sysmon Event ID 1 (Process Create)
-- PowerShell process and command line visible in Wazuh
-- User and parent process context available for analysis
+The goal was to generate a clear process creation event with command-line
+visibility and parent process context.
 
 ## Detection
+Wazuh detected the PowerShell execution on endpoint **ALEXD** through
+Sysmon process creation events (Event ID 1).
 
-The Wazuh SIEM detected the execution of a PowerShell process on the Windows
-endpoint ALEXD. The activity was captured through Sysmon process creation
-events (Event ID 1), providing full command-line visibility.
+The event included full command-line details, user context, and integrity level.
 
 ## Alert Details
-
-- Executable: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-- Command line: powershell -nop -c "Get-Process | Select-Object -First 5"
-- User: Alex-D\dance
+- Executable: `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+- Command line: `powershell -nop -c "Get-Process | Select-Object -First 5"`
+- User: `Alex-D\dance`
 - Integrity level: Medium
-- Parent process: powershell.exe
+- Parent process: `powershell.exe`
 - Detection source: Sysmon (Event ID 1)
 
 ## Analysis
+This activity represents normal interactive PowerShell usage by a legitimate
+local user.
 
-This activity represents interactive PowerShell usage by a legitimate local
-user. The command executed is benign and commonly used for system inspection.
+The command itself is benign and commonly used for basic system inspection.
+However, PowerShell is a dual-use tool and is frequently abused by attackers
+for discovery, execution, and post-exploitation.
 
-However, PowerShell is a dual-use tool frequently abused by attackers during
-initial discovery and execution phases. Command-line logging and parent-child
-process context are critical for distinguishing between normal administrative
-activity and malicious behavior.
+For this reason, command-line logging and parent-child process context are
+important to determine intent.
 
-In this case, no obfuscation, encoded commands, elevated privileges, or
-suspicious child processes were observed.
+In this case, no suspicious indicators were observed:
+- no obfuscation or encoded commands
+- no elevated privileges
+- no suspicious child processes
 
-## Conclusion
+## Analyst Decision
+I classified this activity as **benign**.
 
-The alert was classified as benign.
-No immediate response or escalation was required.
-
-The activity should be monitored and correlated with subsequent events,
-especially if followed by persistence mechanisms, privilege escalation, or
-network-based actions.
+No response or escalation was required.
+The activity would become more relevant if correlated with additional
+suspicious behavior in later stages.
