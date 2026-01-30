@@ -1,36 +1,42 @@
+# Scenario 6 – Network Connections (External)
 
-## Scenario 6 – Network Connections (External)
+## Objective
+See how a basic network connection coming from an external system is logged on a Windows endpoint and detected by Wazuh.
 
-### Objective
-Observe and detect external network connection attempts originating from a Kali Linux host towards a Windows endpoint.
+The focus was on visibility and understanding the logs, not on exploitation.
 
-### Environment
-- Windows 11 endpoint
+## Environment
+- Windows 11 endpoint with Wazuh agent
 - Wazuh SIEM
-- Sysmon enabled
-- Kali Linux attacker VM
+- Kali Linux (external host)
+- Sysmon enabled on the endpoint
 
-### Activity
-From the Kali Linux system, network connections were initiated towards the Windows endpoint using SMB-related services.
+## Activity
+From the Kali Linux machine, I initiated simple network connections toward the Windows endpoint.
 
-Commands executed:
+Commands executed from Kali:
 - nc -vn 192.168.100.3 445
 - smbclient -L //192.168.100.3 -N
 
-### Detection
-The Wazuh SIEM detected multiple authentication-related security events on the Windows endpoint.
+These actions simulate an external system attempting to access a network service without valid credentials.
 
-Observed events:
-- Event ID: 4625 (Failed logon)
-- Logon Type: 3 (Network)
-- Authentication Package: NTLM
-- Source Workstation: KALI
-- Target User: ANONYMOUS LOGON / kali
+## Detection
+On the Windows endpoint, the activity generated authentication-related security events.
 
-### Analysis
-The activity represents an external network authentication attempt against an exposed SMB service.
-No successful authentication occurred and no follow-up activity was detected.
+Wazuh detected failed network logon attempts associated with the Kali IP address.
 
-### Conclusion
-The activity was classified as low severity and monitored only.
-Such behavior is commonly observed during network enumeration or service discovery phases.
+Observed details:
+- External source IP (Kali)
+- Network logon type
+- NTLM authentication attempts
+- Authentication failures only
+
+## Analysis
+External authentication attempts over the network can be an early sign of enumeration or brute-force activity.
+
+In this case, the activity was controlled and initiated by me for testing purposes.
+No successful authentication occurred and no follow-up activity was observed.
+
+## Verdict
+Benign external network activity.  
+Alert was valid, but no escalation was required.
