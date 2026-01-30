@@ -1,9 +1,8 @@
 # Scenario 1 – Local Discovery
 
 ## Scenario Overview
-This scenario demonstrates local discovery activity executed by an interactive user
-on a Windows endpoint. The objective is to observe how common enumeration commands
-are detected and correlated within the SIEM from a SOC Tier 1 perspective.
+In this scenario, I looked at how basic local discovery commands executed by a user appear in the SIEM.
+The goal was to understand what kind of visibility these commands generate and how they would look from a SOC Tier 1 point of view.
 
 ## Environment
 - Windows 11 endpoint (real system)
@@ -11,19 +10,18 @@ are detected and correlated within the SIEM from a SOC Tier 1 perspective.
 - Sysmon enabled on the endpoint
 
 ## Activity Performed
-Local enumeration commands were executed from an interactive command prompt session.
+From an interactive command prompt session, I ran a few common local enumeration commands.
 
-Observed commands:
+Commands observed:
 - net users
 - net localgroup administrators
 
-Additional discovery-related commands were observed within the same session
-(net stats, net time, net file, net share).
+During the same session, I also noticed other discovery-related commands such as
+`net stats`, `net time`, `net file`, and `net share`.
 
 ## Detection
-The activity was detected by Wazuh through Sysmon process creation events (Event ID 1).
-A standard Windows LOLBin (`net1.exe`) was used to enumerate local administrator group
-membership on the endpoint **ALEXD**.
+Wazuh detected this activity through Sysmon process creation events (Event ID 1).
+The enumeration was performed using a standard Windows binary (`net1.exe`) on the endpoint **ALEXD**.
 
 ## Alert Details
 - Command executed: `net localgroup administrators`
@@ -31,19 +29,14 @@ membership on the endpoint **ALEXD**.
 - User: `Alex-D\dance`
 - Alert severity: Low (Level 3)
 
-## Correlation and Analysis
-While each command is legitimate when executed individually, the sequence and timing
-indicate systematic discovery behavior.
+## Analysis
+Individually, these commands are normal administrative actions.
+However, when executed together and close in time, they form a clear discovery pattern.
 
-Such command patterns are commonly observed during early post-access reconnaissance
-phases to assess user privileges and available system resources.
-
-No evidence of privilege escalation, persistence, or lateral movement was observed
-during this activity.
+This type of behavior is often seen early in an attack lifecycle, when an attacker is
+trying to understand user privileges and system configuration.
+In this case, no further activity such as privilege escalation or persistence was observed.
 
 ## Analyst Decision
-The activity was monitored but not escalated.
-
-Although the behavior aligns with discovery techniques, the lack of follow-up
-malicious actions supports a **benign but relevant** classification.
-Continued monitoring of the endpoint was recommended.
+I classified this activity as **benign but relevant**.
+No escalation was required, but continued monitoring of the endpoint was considered appropriate.
