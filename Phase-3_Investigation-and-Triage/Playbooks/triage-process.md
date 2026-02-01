@@ -1,95 +1,96 @@
 # Triage Process – SOC Analyst Notes
 
-Acest document descrie modul în care fac triage pe alerte
-în Wazuh, cu scopul de a decide rapid dacă un eveniment
-este zgomot, suspicious sau necesită escalare.
+This document describes how I perform triage on alerts
+in Wazuh, with the goal of quickly deciding whether an event
+is noise, suspicious, or requires escalation.
 
-Nu tratez fiecare alertă ca un incident separat.
-Primul obiectiv este identificarea pattern-urilor.
-
----
-
-## 1. Primul contact cu alerta
-
-Când apare o alertă, mă uit întâi la:
-- rule.id și descriere
-- tipul evenimentului (auth, process, file, network)
-- frecvență (single vs repetitiv)
-- agent / user implicat
-
-Întrebarea inițială:
-> Este un eveniment izolat sau parte dintr-o secvență?
+I do not treat every alert as a separate incident.
+The primary objective is identifying patterns.
 
 ---
 
-## 2. Gruparea alertelor
+## 1. Initial Alert Review
 
-Dacă observ:
-- aceeași regulă
-- același user
-- aceeași sursă
-- interval scurt de timp
+When an alert appears, I first look at:
+- rule.id and description
+- event type (auth, process, file, network)
+- frequency (single vs repetitive)
+- involved agent / user
 
-tratez alertele ca **un singur incident**, nu ca evenimente separate.
+The initial question is:
+> Is this an isolated event or part of a sequence?
 
 ---
 
-## 3. Ordinea de analiză (importantă)
+## 2. Alert Grouping
 
-Urmez întotdeauna aceeași ordine:
+If I observe:
+- the same rule
+- the same user
+- the same source
+- a short time window
 
-1. **Autentificare**
-   - Există 4625 (fail)?
-   - Există 4624 (success)?
-   - Succesiune fail → success?
+I treat the alerts as **a single incident**,
+not as separate events.
 
-2. **Execuție de procese**
-   - Ce proces rulează?
-   - Cu ce parametri?
-   - Cine l-a pornit?
+---
 
-3. **Activitate post-login**
-   - Enumerare?
-   - Tentative de escaladare?
-   - Persistență?
+## 3. Analysis Order (Important)
 
-4. **Rețea**
-   - Există conexiuni outbound?
-   - IP-uri neobișnuite?
-   - Comunicare imediat după execuție?
+I always follow the same order:
 
+1. **Authentication**
+   - Are there 4625 events (failures)?
+   - Is there a 4624 event (success)?
+   - Is there a fail → success sequence?
 
+2. **Process Execution**
+   - Which process is running?
+   - With what parameters?
+   - Who started it?
 
-## 4. Clasificare inițială
+3. **Post-Login Activity**
+   - Enumeration activity?
+   - Privilege escalation attempts?
+   - Persistence mechanisms?
 
-După triage, clasific alerta ca:
-- **Benign** – activitate explicabilă, fără pattern
-- **Suspicious** – activitate ambiguă, necesită corelare
-- **Malicious** – pattern clar sau impact confirmat
+4. **Network**
+   - Any outbound connections?
+   - Unusual IP addresses?
+   - Communication immediately after execution?
 
-Dacă nu sunt suficiente date, nu forțez verdictul.
+---
 
+## 4. Initial Classification
 
-## 5. Importanța dovezilor negative
+After triage, I classify the alert as:
+- **Benign** – explainable activity, no pattern
+- **Suspicious** – ambiguous activity requiring correlation
+- **Malicious** – clear pattern or confirmed impact
 
-Verific explicit dacă LIPSEȘTE:
-- autentificare reușită
-- persistență
-- activitate de rețea
-- procese ulterioare
+If there is insufficient data, I do not force a verdict.
 
-Lipsa acestor elemente este documentată
-și influențează decizia finală.
+---
 
+## 5. Importance of Negative Evidence
 
+I explicitly verify the absence of:
+- successful authentication
+- persistence mechanisms
+- network activity
+- subsequent process execution
 
-## 6. Rezultatul triage-ului
+The lack of these elements is documented
+and influences the final decision.
 
-La finalul triage-ului decid una din următoarele:
-- închid alerta ca benignă
-- o documentez ca suspicious și monitorizez
-- o escaladez pentru investigație avansată
+---
 
-Scopul triage-ului este viteză + claritate,
-nu investigație completă.
+## 6. Triage Outcome
 
+At the end of triage, I decide one of the following:
+- close the alert as benign
+- document it as suspicious and monitor
+- escalate it for advanced investigation
+
+The purpose of triage is speed and clarity,
+not full investigation.
