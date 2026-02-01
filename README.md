@@ -44,8 +44,6 @@ The lab is organized into phases, each focusing on a different aspect of SOC wor
 - **Phase 3 – Investigation and Triage**  
   Analyzing alerts, correlating events, and making basic analyst decisions.
 
-- **Phase 4 – Response and Hardening**  
-  Documenting response considerations, limitations, and potential improvements.
 
 Each phase includes documentation and screenshots to show both the actions taken
 and the resulting visibility in the SIEM.
