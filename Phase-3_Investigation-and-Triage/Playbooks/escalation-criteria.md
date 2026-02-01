@@ -1,93 +1,93 @@
-
 # Escalation Criteria – When to Escalate an Incident
 
-Acest document definește condițiile clare în care un incident
-trebuie escaladat din triage către incident response
-sau nivel superior de analiză.
+This document defines the clear conditions under which an incident
+should be escalated from triage to incident response
+or a higher level of analysis.
 
-Escalarea se bazează pe comportament observat,
-nu pe presupuneri sau context extern.
-
----
-
-## 1. Autentificare (High Priority)
-
-Escalare imediată dacă există:
-- succesiune **4625 → 4624**
-- autentificare reușită după încercări repetate
-- login din context neobișnuit (timp, user, metodă)
-
-Acest tip de eveniment indică posibilă compromitere.
+Escalation is based on observed behavior,
+not on assumptions or external context.
 
 ---
 
-## 2. Activitate post-authentication
+## 1. Authentication (High Priority)
 
-Escalare dacă, după un login reușit, observ:
-- execuții de enumerare (whoami, net, sc, powershell)
-- tentative de escaladare a privilegiilor
-- execuții multiple într-un interval scurt
+Immediate escalation if any of the following are observed:
+- a clear **4625 → 4624** sequence
+- successful authentication after repeated failures
+- login from an unusual context (time, user, method)
 
-Chiar dacă escaladarea nu reușește,
-intenția este suficientă pentru escalare.
+This type of activity indicates a potential compromise.
 
 ---
 
-## 3. Persistență
+## 2. Post-Authentication Activity
 
-Escalare automată dacă sunt detectate:
+Escalate if, after a successful login, the following are observed:
+- enumeration commands (whoami, net, sc, powershell)
+- attempts to escalate privileges
+- multiple executions within a short time window
+
+Even if privilege escalation does not succeed,
+the observed intent is sufficient to justify escalation.
+
+---
+
+## 3. Persistence
+
+Automatic escalation if any of the following are detected:
 - registry run keys
 - scheduled tasks
-- servicii noi
-- modificări care supraviețuiesc reboot-ului
+- newly created services
+- changes that survive a system reboot
 
-Persistența indică impact și necesită răspuns imediat.
+Persistence indicates confirmed impact
+and requires immediate response.
 
 ---
 
 ## 4. Network Activity
 
-Escalare dacă apare:
-- trafic outbound imediat după execuție
-- conexiuni către IP-uri sau domenii necunoscute
-- beaconing sau pattern repetitiv
+Escalate if any of the following occur:
+- outbound network traffic immediately after execution
+- connections to unknown IP addresses or domains
+- beaconing or repetitive communication patterns
 
-Corelarea proces → rețea este un indicator puternic.
-
----
-
-## 5. Volum și pattern
-
-Escalare dacă:
-- evenimentele sunt repetitive
-- afectează mai mulți useri sau sisteme
-- indică automatizare
-
-Chiar și fără succes imediat,
-pattern-ul justifică escalarea.
+Process-to-network correlation is a strong indicator of malicious activity.
 
 ---
 
-## 6. Ce NU escaladez imediat
+## 5. Volume and Pattern
 
-Nu escaladez dacă:
-- evenimentul este izolat
-- nu există follow-up
-- nu există impact observabil
-- activitatea poate fi explicată legitim
+Escalate if:
+- events are repetitive
+- multiple users or systems are affected
+- activity indicates automation
 
-În aceste cazuri, documentez și monitorizez.
+Even without immediate success,
+the pattern alone justifies escalation.
 
 ---
 
-## 7. Principiul final
+## 6. When Not to Escalate Immediately
 
-Escalarea este o decizie bazată pe:
+Do not escalate if:
+- the event is isolated
+- there is no follow-up activity
+- no observable impact is present
+- the activity can be legitimately explained
+
+In these cases, the event is documented and monitored.
+
+---
+
+## 7. Final Principle
+
+Escalation decisions are based on:
 - **impact**
-- **intenție**
-- **corelare**
+- **intent**
+- **correlation**
 
-Nu pe:
-- numărul de alerte
-- severitatea inițială
-- presupuneri.
+Not on:
+- the number of alerts
+- initial severity level
+- assumptions.
